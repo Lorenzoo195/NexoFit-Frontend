@@ -1,0 +1,154 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Categorías - NexoFit">
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+		<!-- Header -->
+		<div class="mb-12">
+			<h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+				Explora Nuestras <span class="gradient-text">Modalidades</span>
+			</h1>
+			<p class="text-zinc-400 text-lg">Descubre todas las actividades deportivas organizadas por categoría</p>
+		</div>
+
+		<!-- Loading State -->
+		<div id="loading" class="flex items-center justify-center py-24">
+			<svg class="animate-spin h-12 w-12 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+				<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+				<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+			</svg>
+		</div>
+
+		<!-- Error State -->
+		<div id="error" class="hidden bg-red-500/10 border border-red-500/50 text-red-400 px-6 py-4 rounded-xl mb-8">
+			<p class="font-semibold mb-1">Error al cargar las categorías</p>
+			<p id="error-message"></p>
+		</div>
+
+		<!-- Categories Container -->
+		<div id="categories-container" class="hidden space-y-16">
+			<!-- Categories will be inserted here -->
+		</div>
+
+		<!-- Empty State -->
+		<div id="empty" class="hidden bg-zinc-900 border border-zinc-800 rounded-xl p-12 text-center">
+			<svg class="w-16 h-16 text-zinc-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+			</svg>
+			<h3 class="text-xl font-semibold text-white mb-2">No hay categorías disponibles</h3>
+			<p class="text-zinc-400">Las categorías aparecerán aquí una vez estén disponibles</p>
+		</div>
+	</div>
+</Layout>
+
+<script>
+	// @ts-nocheck
+	import { api } from '../lib/api';
+
+	async function loadCategories() {
+		const loading = document.getElementById('loading');
+		const error = document.getElementById('error');
+		const errorMessage = document.getElementById('error-message');
+		const container = document.getElementById('categories-container');
+		const empty = document.getElementById('empty');
+
+		try {
+			const response = await api.getCategoriesWithModalities();
+			
+			loading.classList.add('hidden');
+
+			if (!response.success) {
+				throw new Error(response.error || 'Error al cargar las categorías');
+			}
+
+			if (!response.data || response.data.length === 0) {
+				empty.classList.remove('hidden');
+				return;
+			}
+
+			// Render categories
+			container.innerHTML = response.data.map((category) => {
+				if (!category.modalities || category.modalities.length === 0) {
+					return ''; // Skip categories without modalities
+				}
+
+				return `
+					<section class="space-y-6">
+						<!-- Category Header -->
+						<div class="border-b border-zinc-800 pb-4">
+							<h2 class="text-3xl font-bold text-white mb-2">${category.title}</h2>
+							<p class="text-zinc-400 text-lg">${category.description || ''}</p>
+						</div>
+
+						<!-- Modalities Grid -->
+						<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+							${category.modalities.map((modality) => `
+								<a 
+									href="/modalidades/${modality.id}"
+									class="group bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-orange-500/50 hover:shadow-xl hover:shadow-orange-500/10 transition-all transform hover:-translate-y-1"
+								>
+									<!-- Modality Image -->
+									<div class="relative h-48 bg-zinc-800 overflow-hidden">
+										${modality.image_url 
+											? `<img 
+													src="${modality.image_url}" 
+													alt="${modality.title}" 
+													class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+												/>`
+											: `<div class="w-full h-full flex items-center justify-center bg-zinc-800">
+													<svg class="w-16 h-16 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+													</svg>
+												</div>`
+										}
+										<div class="absolute inset-0 bg-linear-to-t from-black/80 to-transparent"></div>
+									</div>
+
+									<!-- Modality Info -->
+									<div class="p-6">
+										<h3 class="text-xl font-bold text-white mb-2 group-hover:text-orange-500 transition-colors">
+											${modality.title}
+										</h3>
+										<p class="text-zinc-400 text-sm mb-4 line-clamp-2">
+											${modality.description || 'Descubre esta modalidad deportiva y reserva tu clase'}
+										</p>
+										
+										<!-- View Classes Button -->
+										<div class="flex items-center text-orange-500 font-semibold text-sm group-hover:text-orange-400">
+											<span>Ver clases disponibles</span>
+											<svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+											</svg>
+										</div>
+									</div>
+								</a>
+							`).join('')}
+						</div>
+					</section>
+				`;
+			}).filter((html) => html !== '').join('');
+
+			container.classList.remove('hidden');
+
+		} catch (err) {
+			loading.classList.add('hidden');
+			error.classList.remove('hidden');
+			errorMessage.textContent = err.message || 'Error de conexión con el servidor';
+			console.error('Error loading categories:', err);
+		}
+	}
+
+	// Load categories on page load
+	loadCategories();
+</script>
+
+<style>
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+</style>
+

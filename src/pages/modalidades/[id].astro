@@ -1,0 +1,321 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+// Configurar como server-side rendered para rutas dinámicas
+export const prerender = false;
+---
+
+<Layout title="Modalidad - NexoFit">
+	<!-- Loading Screen -->
+	<div id="loading-screen" class="flex items-center justify-center min-h-screen">
+		<div class="text-center">
+			<svg class="animate-spin h-12 w-12 text-orange-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+				<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+				<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+			</svg>
+			<p class="text-zinc-400">Cargando modalidad...</p>
+		</div>
+	</div>
+
+	<!-- Error Screen -->
+	<div id="error-screen" class="hidden max-w-4xl mx-auto px-4 py-12">
+		<div class="bg-red-500/10 border border-red-500/50 text-red-400 px-6 py-4 rounded-xl">
+			<p class="font-semibold mb-2">Error al cargar la modalidad</p>
+			<p id="error-message" class="mb-4"></p>
+			<a href="/categorias" class="inline-flex items-center text-orange-500 hover:text-orange-400 font-semibold">
+				<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+				</svg>
+				Volver a categorías
+			</a>
+		</div>
+	</div>
+
+	<!-- Main Content -->
+	<div id="main-content" class="hidden">
+		<!-- Hero Banner -->
+		<div class="relative h-125 overflow-hidden">
+			<!-- Background Image -->
+			<div id="hero-image" class="absolute inset-0 bg-zinc-900">
+				<!-- Image will be set via JavaScript -->
+			</div>
+			
+			<!-- Overlay Gradient -->
+			<div class="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/80 to-transparent"></div>
+			
+			<!-- Content -->
+			<div class="relative h-full flex items-end">
+				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+					<a href="/categorias" class="inline-flex items-center text-orange-500 hover:text-orange-400 font-semibold mb-4 transition-colors">
+						<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+						</svg>
+						Volver a categorías
+					</a>
+					
+					<h1 id="modality-title" class="text-5xl md:text-6xl font-bold text-white mb-4">
+						<!-- Title will be inserted here -->
+					</h1>
+					
+					<p id="modality-description" class="text-zinc-300 text-lg md:text-xl max-w-3xl mb-6">
+						<!-- Description will be inserted here -->
+					</p>
+
+					<!-- Stats -->
+					<div class="flex flex-wrap gap-4">
+						<div class="bg-orange-500/20 backdrop-blur-sm text-orange-400 px-6 py-3 rounded-lg border border-orange-500/30">
+							<span id="classes-count" class="text-2xl font-bold">0</span>
+							<span class="text-sm ml-2">clases disponibles</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Classes Section -->
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+			<div class="flex items-center justify-between mb-8">
+				<h2 class="text-3xl font-bold text-white">Clases Disponibles</h2>
+				<div class="text-zinc-400 text-sm">
+					<span id="available-count">0</span> clases encontradas
+				</div>
+			</div>
+
+			<!-- Empty State -->
+			<div id="empty-state" class="hidden bg-zinc-900 border border-zinc-800 rounded-xl p-12 text-center">
+				<svg class="w-16 h-16 text-zinc-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+				</svg>
+				<h3 class="text-xl font-semibold text-white mb-2">No hay clases disponibles</h3>
+				<p class="text-zinc-400">Las clases para esta modalidad aparecerán aquí cuando estén programadas</p>
+			</div>
+
+			<!-- Classes Grid -->
+			<div id="classes-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+				<!-- Classes will be inserted here -->
+			</div>
+		</div>
+	</div>
+</Layout>
+
+<script>
+	// @ts-nocheck
+	import { api } from '../../lib/api';
+	import { isAuthenticated } from '../../lib/auth';
+
+	// Get modality ID from URL
+	const urlParts = window.location.pathname.split('/');
+	const modalityId = parseInt(urlParts[urlParts.length - 1]);
+
+	const loadingScreen = document.getElementById('loading-screen');
+	const errorScreen = document.getElementById('error-screen');
+	const errorMessage = document.getElementById('error-message');
+	const mainContent = document.getElementById('main-content');
+
+	// Format date helper
+	function formatDate(dateStr) {
+		const date = new Date(dateStr);
+		const options = {
+			weekday: 'short',
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+		};
+		return date.toLocaleDateString('es-ES', options);
+	}
+
+	function formatTime(dateStr) {
+		const date = new Date(dateStr);
+		return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+	}
+
+	// Load modality data
+	async function loadModality() {
+		try {
+			// Get modality with classes
+			const response = await api.getModalityWithClasses(modalityId);
+
+			if (!response.success || !response.data) {
+				throw new Error(response.error || 'Modalidad no encontrada');
+			}
+
+			const modality = response.data;
+
+			// Get user bookings if authenticated
+			let userBookings = [];
+			if (isAuthenticated()) {
+				const bookingsResponse = await api.getMyUpcomingBookings();
+				if (bookingsResponse.success && bookingsResponse.data) {
+					userBookings = bookingsResponse.data.map((b) => b.class_id);
+				}
+			}
+
+			// Hide loading, show content
+			loadingScreen.classList.add('hidden');
+			mainContent.classList.remove('hidden');
+
+			// Set hero image
+			const heroImage = document.getElementById('hero-image');
+			if (modality.image_url) {
+				heroImage.style.backgroundImage = `url(${modality.image_url})`;
+				heroImage.style.backgroundSize = 'cover';
+				heroImage.style.backgroundPosition = 'center';
+			}
+
+			// Set title and description
+			document.getElementById('modality-title').textContent = modality.title;
+			document.getElementById('modality-description').textContent = 
+				modality.description || 'Descubre esta emocionante modalidad deportiva y reserva tu clase.';
+
+			// Set classes count
+			const classesCount = modality.classes?.length || 0;
+			document.getElementById('classes-count').textContent = classesCount.toString();
+			document.getElementById('available-count').textContent = classesCount.toString();
+
+			// Update page title
+			document.title = `${modality.title} - NexoFit`;
+
+			// Render classes
+			if (classesCount === 0) {
+				document.getElementById('empty-state').classList.remove('hidden');
+			} else {
+				renderClasses(modality.classes, userBookings);
+			}
+
+		} catch (error) {
+			console.error('Error loading modality:', error);
+			loadingScreen.classList.add('hidden');
+			errorScreen.classList.remove('hidden');
+			errorMessage.textContent = error.message || 'Error de conexión con el servidor';
+		}
+	}
+
+	function renderClasses(classes, userBookings) {
+		const grid = document.getElementById('classes-grid');
+
+		grid.innerHTML = classes.map((classItem) => {
+			const isBooked = userBookings.includes(classItem.id);
+			const isFull = classItem.is_full;
+			const startDate = new Date(classItem.start_time);
+			const endDate = new Date(classItem.end_time);
+			const isPast = startDate < new Date();
+			const isAuth = isAuthenticated();
+
+			return `
+				<div class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-orange-500/50 transition-all">
+					<div class="p-6">
+						<!-- Date -->
+						<div class="flex items-center text-orange-500 mb-4">
+							<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+							</svg>
+							<span class="font-semibold">${formatDate(classItem.start_time)}</span>
+						</div>
+
+						<!-- Time -->
+						<div class="flex items-center text-zinc-300 mb-4">
+							<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+							</svg>
+							<span>${formatTime(classItem.start_time)} - ${formatTime(classItem.end_time)}</span>
+						</div>
+
+						${classItem.instructor_first_name ? `
+							<!-- Instructor -->
+							<div class="flex items-center text-zinc-300 mb-4">
+								<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+								</svg>
+								<span>${classItem.instructor_first_name} ${classItem.instructor_last_name}</span>
+							</div>
+						` : ''}
+
+						<!-- Capacity -->
+						<div class="flex items-center text-zinc-300 mb-6">
+							<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+							</svg>
+							<span>${classItem.current_bookings} / ${classItem.capacity} plazas</span>
+						</div>
+
+						<!-- Status / Button -->
+						${isPast ? `
+							<div class="bg-zinc-800 text-zinc-500 px-4 py-3 rounded-lg text-center font-semibold">
+								Clase finalizada
+							</div>
+						` : !isAuth ? `
+							<a 
+								href="/login"
+								class="block w-full gradient-primary text-white px-4 py-3 rounded-lg font-semibold text-center hover:shadow-xl hover:shadow-orange-500/30 transition-all"
+							>
+								Inicia sesión para reservar
+							</a>
+						` : isBooked ? `
+							<div class="bg-green-500/20 text-green-400 px-4 py-3 rounded-lg text-center font-semibold flex items-center justify-center border border-green-500/30">
+								<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+								</svg>
+								Ya estás apuntado
+							</div>
+						` : isFull ? `
+							<div class="bg-red-500/20 text-red-400 px-4 py-3 rounded-lg text-center font-semibold flex items-center justify-center border border-red-500/30">
+								<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+								</svg>
+								Clase llena
+							</div>
+						` : `
+							<button
+								data-class-id="${classItem.id}"
+								class="book-class-btn w-full gradient-primary text-white px-4 py-3 rounded-lg font-semibold hover:shadow-xl hover:shadow-orange-500/30 transition-all"
+							>
+								Reservar Clase
+							</button>
+						`}
+					</div>
+				</div>
+			`;
+		}).join('');
+
+		// Add event listeners to book buttons
+		document.querySelectorAll('.book-class-btn').forEach((button) => {
+			button.addEventListener('click', async (e) => {
+				const btn = e.currentTarget;
+				const classId = btn.getAttribute('data-class-id');
+
+				if (!classId) return;
+
+				btn.disabled = true;
+				btn.textContent = 'Reservando...';
+
+				try {
+					const response = await api.createBooking(Number(classId));
+
+					if (response.success) {
+						btn.classList.remove('gradient-primary', 'hover:shadow-xl', 'hover:shadow-orange-500/30');
+						btn.classList.add('bg-green-500/20', 'text-green-400', 'border', 'border-green-500/30');
+						btn.innerHTML = `
+							<svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+							</svg>
+							Ya estás apuntado
+						`;
+						btn.disabled = true;
+					} else {
+						window.toast.error(response.error || 'Error al reservar la clase');
+						btn.disabled = false;
+						btn.textContent = 'Reservar Clase';
+					}
+				} catch (error) {
+					console.error('Error booking class:', error);
+					window.toast.error('Error de conexión. Inténtalo de nuevo.');
+					btn.disabled = false;
+					btn.textContent = 'Reservar Clase';
+				}
+			});
+		});
+	}
+
+	// Load modality on page load
+	loadModality();
+</script>
