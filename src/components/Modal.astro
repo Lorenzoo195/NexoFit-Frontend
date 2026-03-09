@@ -1,0 +1,155 @@
+---
+// Modal component for confirmations and alerts
+---
+
+<div id="modal-container" class="hidden fixed inset-0 z-50 overflow-y-auto">
+  <!-- Backdrop -->
+  <div class="modal-backdrop fixed inset-0 bg-black/80 transition-opacity"></div>
+  
+  <!-- Modal -->
+  <div class="relative min-h-screen flex items-center justify-center p-4">
+    <div class="modal-content relative bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+      <!-- Icon -->
+      <div id="modal-icon" class="flex items-center justify-center w-12 h-12 rounded-full mx-auto mb-4">
+        <!-- Icon will be set dynamically -->
+      </div>
+
+      <!-- Title -->
+      <h3 id="modal-title" class="text-xl font-bold text-white text-center mb-2">
+        <!-- Title will be set dynamically -->
+      </h3>
+
+      <!-- Message -->
+      <p id="modal-message" class="text-zinc-400 text-center mb-6">
+        <!-- Message will be set dynamically -->
+      </p>
+
+      <!-- Actions -->
+      <div id="modal-actions" class="flex gap-3">
+        <!-- Actions will be set dynamically -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Modal utility
+  class Modal {
+    private container: HTMLElement;
+    private backdrop: HTMLElement;
+    private icon: HTMLElement;
+    private title: HTMLElement;
+    private message: HTMLElement;
+    private actions: HTMLElement;
+    private resolveCallback: ((value: boolean) => void) | null = null;
+
+    constructor() {
+      this.container = document.getElementById('modal-container')!;
+      this.backdrop = this.container.querySelector('.modal-backdrop')!;
+      this.icon = document.getElementById('modal-icon')!;
+      this.title = document.getElementById('modal-title')!;
+      this.message = document.getElementById('modal-message')!;
+      this.actions = document.getElementById('modal-actions')!;
+
+      // Close on backdrop click
+      this.backdrop.addEventListener('click', () => this.close(false));
+    }
+
+    show(options: {
+      title: string;
+      message: string;
+      type?: 'confirm' | 'alert' | 'warning';
+      confirmText?: string;
+      cancelText?: string;
+      onlyConfirm?: boolean;
+    }): Promise<boolean> {
+      return new Promise((resolve) => {
+        this.resolveCallback = resolve;
+
+        // Set icon based on type
+        const iconColors = {
+          confirm: 'bg-blue-500/20 text-blue-400',
+          alert: 'bg-red-500/20 text-red-400',
+          warning: 'bg-orange-500/20 text-orange-400',
+        };
+
+        const iconSvgs = {
+          confirm: `
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          `,
+          alert: `
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+          `,
+          warning: `
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          `,
+        };
+
+        const type = options.type || 'confirm';
+        this.icon.className = `flex items-center justify-center w-12 h-12 rounded-full mx-auto mb-4 ${iconColors[type]}`;
+        this.icon.innerHTML = iconSvgs[type];
+
+        // Set content
+        this.title.textContent = options.title;
+        this.message.textContent = options.message;
+
+        // Set actions
+        if (options.onlyConfirm) {
+          this.actions.innerHTML = `
+            <button
+              class="modal-confirm flex-1 gradient-primary text-white px-4 py-2 rounded-lg font-semibold hover:shadow-lg transition-all"
+            >
+              ${options.confirmText || 'Aceptar'}
+            </button>
+          `;
+        } else {
+          this.actions.innerHTML = `
+            <button
+              class="modal-cancel flex-1 bg-zinc-800 hover:bg-zinc-700 text-white px-4 py-2 rounded-lg font-semibold transition-all"
+            >
+              ${options.cancelText || 'Cancelar'}
+            </button>
+            <button
+              class="modal-confirm flex-1 gradient-primary text-white px-4 py-2 rounded-lg font-semibold hover:shadow-lg transition-all"
+            >
+              ${options.confirmText || 'Confirmar'}
+            </button>
+          `;
+        }
+
+        // Add event listeners
+        const confirmBtn = this.actions.querySelector('.modal-confirm')!;
+        const cancelBtn = this.actions.querySelector('.modal-cancel');
+
+        confirmBtn.addEventListener('click', () => this.close(true));
+        if (cancelBtn) {
+          cancelBtn.addEventListener('click', () => this.close(false));
+        }
+
+        // Show modal
+        this.container.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      });
+    }
+
+    close(result: boolean) {
+      this.container.classList.add('hidden');
+      document.body.style.overflow = '';
+      
+      if (this.resolveCallback) {
+        this.resolveCallback(result);
+        this.resolveCallback = null;
+      }
+    }
+  }
+
+  // Create global modal instance
+  const modal = new Modal();
+  (window as any).modal = modal;
+</script>

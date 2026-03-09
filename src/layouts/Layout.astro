@@ -1,27 +1,61 @@
 ---
 import "../styles/global.css";
+import Navbar from "../components/Navbar.astro";
+import Toaster from "../components/Toaster.astro";
+import Modal from "../components/Modal.astro";
+
+const { title = "NexoFit - Tu Gimnasio Premium", description = "Reserva tus clases de fitness en NexoFit" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es" class="dark">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
+		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{title}</title>
 	</head>
-	<body>
-		<slot />
+	<body class="bg-slate-950 text-slate-100 min-h-screen antialiased">
+		<Toaster />
+		<Modal />
+		<Navbar />
+		<main class="min-h-screen">
+			<slot />
+		</main>
+		<footer class="bg-zinc-900 border-t border-zinc-800 py-8 mt-20">
+			<div class="max-w-7xl mx-auto px-4 text-center text-zinc-400">
+				<p>&copy; {new Date().getFullYear()} NexoFit. Todos los derechos reservados.</p>
+			</div>
+		</footer>
 	</body>
 </html>
 
-<style>
-	html,
+<style is:global>
+	* {
+		box-sizing: border-box;
+	}
+	
+	html {
+		scroll-behavior: smooth;
+	}
+	
 	body {
 		margin: 0;
-		width: 100%;
-		height: 100%;
+		font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+	}
+
+	/* Gradient accents */
+	.gradient-primary {
+		background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+	}
+
+	.gradient-text {
+		background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
 	}
 </style>

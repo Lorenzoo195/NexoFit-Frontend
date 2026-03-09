@@ -1,11 +1,313 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="NexoFit - Tu Gimnasio Premium" description="Transforma tu cuerpo y mente en NexoFit. Reserva tus clases de fitness favoritas.">
+	<!-- Hero Section with Background Image -->
+	<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+		<!-- Background Image -->
+		<div class="absolute inset-0">
+			<img 
+				src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80" 
+				alt="Gimnasio NexoFit"
+				class="w-full h-full object-cover"
+			/>
+			<div class="absolute inset-0 bg-slate-950/85"></div>
+			<div class="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/50 to-slate-950"></div>
+		</div>
+		
+		<!-- Content -->
+		<div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">
+			<div class="space-y-8 animate-fade-in">
+				
+
+				<!-- Badge -->
+				<div class="inline-flex items-center space-x-2 bg-zinc-900/80 backdrop-blur-sm border border-orange-500/20 rounded-full px-4 py-2">
+					<span class="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
+					<span class="text-sm text-zinc-300">Más de 500 socios activos</span>
+				</div>
+
+				<!-- Main Heading -->
+				<h1 class="text-5xl md:text-7xl font-bold text-white leading-tight">
+					Transforma tu
+					<span class="block gradient-text">Cuerpo y Mente</span>
+				</h1>
+
+				<!-- Subheading -->
+				<p class="text-xl md:text-2xl text-zinc-400 max-w-3xl mx-auto">
+					Reserva tus clases favoritas, entrena con los mejores instructores y alcanza tus objetivos de fitness en NexoFit
+				</p>
+
+				<!-- CTA Buttons -->
+				<div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+					<a 
+						href="/register" 
+						class="gradient-primary text-white font-bold px-8 py-4 rounded-lg hover:shadow-2xl hover:shadow-orange-500/30 transform hover:scale-105 transition-all duration-300 w-full sm:w-auto"
+					>
+						Comienza Hoy
+					</a>
+					<a 
+						href="/categorias" 
+						class="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold px-8 py-4 rounded-lg border border-zinc-700 transition-all duration-300 w-full sm:w-auto"
+					>
+						Ver Clases
+					</a>
+				</div>
+
+				<!-- Stats -->
+				<div class="grid grid-cols-3 gap-8 pt-16 max-w-2xl mx-auto">
+					<div class="space-y-2">
+						<p class="text-3xl md:text-4xl font-bold gradient-text">20+</p>
+						<p class="text-sm text-zinc-400">Modalidades</p>
+					</div>
+					<div class="space-y-2">
+						<p class="text-3xl md:text-4xl font-bold gradient-text">50+</p>
+						<p class="text-sm text-zinc-400">Clases Semanales</p>
+					</div>
+					<div class="space-y-2">
+						<p class="text-3xl md:text-4xl font-bold gradient-text">10+</p>
+						<p class="text-sm text-zinc-400">Instructores</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Features Section -->
+	<section class="py-24 bg-zinc-900/50">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="text-center mb-16">
+				<h2 class="text-4xl font-bold text-white mb-4">¿Por qué elegir NexoFit?</h2>
+				<p class="text-xl text-zinc-400">Todo lo que necesitas para tu transformación</p>
+			</div>
+
+			<div class="grid md:grid-cols-3 gap-8">
+				<!-- Feature 1 -->
+				<div class="bg-zinc-900 border border-zinc-800 rounded-xl p-8 hover:border-orange-500/50 transition-all duration-300 group">
+					<div class="w-14 h-14 rounded-lg gradient-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+						<svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+						</svg>
+					</div>
+					<h3 class="text-xl font-bold text-white mb-3">Reservas Flexibles</h3>
+					<p class="text-zinc-400">Reserva y cancela tus clases en cualquier momento desde tu móvil</p>
+				</div>
+
+				<!-- Feature 2 -->
+				<div class="bg-zinc-900 border border-zinc-800 rounded-xl p-8 hover:border-orange-500/50 transition-all duration-300 group">
+					<div class="w-14 h-14 rounded-lg gradient-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+						<svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+						</svg>
+					</div>
+					<h3 class="text-xl font-bold text-white mb-3">Instructores Elite</h3>
+					<p class="text-zinc-400">Entrena con profesionales certificados y experimentados</p>
+				</div>
+
+				<!-- Feature 3 -->
+				<div class="bg-zinc-900 border border-zinc-800 rounded-xl p-8 hover:border-orange-500/50 transition-all duration-300 group">
+					<div class="w-14 h-14 rounded-lg gradient-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+						<svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+						</svg>
+					</div>
+					<h3 class="text-xl font-bold text-white mb-3">Variedad de Clases</h3>
+					<p class="text-zinc-400">Desde Yoga hasta CrossFit, encuentra tu actividad perfecta</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Popular Classes Section -->
+	<section class="py-24 bg-slate-950">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="text-center mb-16">
+				<h2 class="text-4xl font-bold text-white mb-4">Clases Populares</h2>
+				<p class="text-xl text-zinc-400">Descubre nuestras actividades más demandadas</p>
+			</div>
+
+			<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+				<!-- Class Card 1 -->
+				<div class="group relative overflow-hidden rounded-xl">
+					<img 
+						src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&q=80" 
+						alt="Zumba"
+						class="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+					/>
+					<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-end p-6">
+						<div>
+							<h3 class="text-xl font-bold text-white mb-1">Zumba Beach</h3>
+							<p class="text-sm text-zinc-300">Baile & Cardio</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Class Card 2 -->
+				<div class="group relative overflow-hidden rounded-xl">
+					<img 
+						src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&q=80" 
+						alt="BodyPump"
+						class="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+					/>
+					<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-end p-6">
+						<div>
+							<h3 class="text-xl font-bold text-white mb-1">BodyPump</h3>
+							<p class="text-sm text-zinc-300">Fuerza</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Class Card 3 -->
+				<div class="group relative overflow-hidden rounded-xl">
+					<img 
+						src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&q=80" 
+						alt="Yoga"
+						class="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+					/>
+					<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-end p-6">
+						<div>
+							<h3 class="text-xl font-bold text-white mb-1">Yoga Zen</h3>
+							<p class="text-sm text-zinc-300">Relax</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Class Card 4 -->
+				<div class="group relative overflow-hidden rounded-xl">
+					<img 
+						src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=400&q=80" 
+						alt="CrossFit"
+						class="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+					/>
+					<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-end p-6">
+						<div>
+							<h3 class="text-xl font-bold text-white mb-1">CrossFit</h3>
+							<p class="text-sm text-zinc-300">Alta Intensidad</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="text-center mt-12">
+				<a 
+					href="/categorias" 
+					class="inline-flex items-center space-x-2 text-orange-500 hover:text-orange-400 font-semibold transition-colors"
+				>
+					<span>Ver todas las categorías</span>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+					</svg>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- Testimonials Section -->
+	<section class="py-24 bg-zinc-900/50">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="text-center mb-16">
+				<h2 class="text-4xl font-bold text-white mb-4">Lo que dicen nuestros socios</h2>
+				<p class="text-xl text-zinc-400">Historias reales de transformación</p>
+			</div>
+
+			<div class="grid md:grid-cols-3 gap-8">
+				<div class="bg-zinc-900 border border-zinc-800 rounded-xl p-8">
+					<div class="flex items-center mb-4">
+						<div class="flex space-x-1 text-orange-500">
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+						</div>
+					</div>
+					<p class="text-zinc-300 mb-6">"NexoFit cambió mi vida. Los instructores son increíbles y la variedad de clases me mantiene motivada cada día."</p>
+					<p class="text-white font-semibold">María González</p>
+					<p class="text-zinc-500 text-sm">Socia desde 2024</p>
+				</div>
+
+				<div class="bg-zinc-900 border border-zinc-800 rounded-xl p-8">
+					<div class="flex items-center mb-4">
+						<div class="flex space-x-1 text-orange-500">
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+						</div>
+					</div>
+					<p class="text-zinc-300 mb-6">"La mejor inversión que he hecho. El sistema de reservas es súper fácil y las instalaciones son de primera."</p>
+					<p class="text-white font-semibold">Carlos Ruiz</p>
+					<p class="text-zinc-500 text-sm">Socio desde 2023</p>
+				</div>
+
+				<div class="bg-zinc-900 border border-zinc-800 rounded-xl p-8">
+					<div class="flex items-center mb-4">
+						<div class="flex space-x-1 text-orange-500">
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+							<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+						</div>
+					</div>
+					<p class="text-zinc-300 mb-6">"He probado varios gimnasios y NexoFit es el mejor. El ambiente es genial y los resultados hablan por sí solos."</p>
+					<p class="text-white font-semibold">Ana Martínez</p>
+					<p class="text-zinc-500 text-sm">Socia desde 2025</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- CTA Section -->
+	<section class="py-24 relative overflow-hidden">
+		<div class="absolute inset-0">
+			<img 
+				src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=1920&q=80" 
+				alt="CrossFit Training"
+				class="w-full h-full object-cover"
+			/>
+			<div class="absolute inset-0 bg-slate-950/80"></div>
+		</div>
+		<div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+			<h2 class="text-4xl md:text-5xl font-bold text-white mb-6">¿Listo para empezar?</h2>
+			<p class="text-xl text-zinc-300 mb-8">Únete a la comunidad NexoFit hoy y obtén tu primera semana gratis</p>
+			<a 
+				href="/register" 
+				class="inline-block gradient-primary text-white font-bold px-10 py-5 rounded-lg hover:shadow-2xl hover:shadow-orange-500/40 transform hover:scale-105 transition-all duration-300 text-lg"
+			>
+				Regístrate Gratis
+			</a>
+		</div>
+	</section>
 </Layout>
+
+<style>
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes float {
+		0%, 100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
+	}
+
+	.animate-fade-in {
+		animation: fade-in 1s ease-out;
+	}
+
+	.animate-float {
+		animation: float 3s ease-in-out infinite;
+	}
+</style>
