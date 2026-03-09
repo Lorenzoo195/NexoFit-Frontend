@@ -1,0 +1,190 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Iniciar Sesión - NexoFit" description="Accede a tu cuenta de NexoFit">
+	<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+		<div class="max-w-md w-full space-y-8">
+			<!-- Logo -->
+			<div class="text-center">
+				<img src="/logo-192x192.png" alt="NexoFit Logo" class="mx-auto h-20 w-20" />
+				<h2 class="mt-6 text-3xl font-bold text-white">
+					Bienvenido de nuevo
+				</h2>
+				<p class="mt-2 text-sm text-zinc-400">
+					Ingresa a tu cuenta para reservar clases
+				</p>
+			</div>
+
+			<!-- Login Form -->
+			<div class="bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl p-8">
+				<form id="login-form" class="space-y-6">
+					<!-- Error Message -->
+					<div id="error-message" class="hidden bg-red-500/10 border border-red-500/50 rounded-lg p-4">
+						<p class="text-red-400 text-sm" id="error-text"></p>
+					</div>
+
+					<!-- Email -->
+					<div>
+						<label for="email" class="block text-sm font-medium text-zinc-300 mb-2">
+							Correo Electrónico
+						</label>
+						<input
+							id="email"
+							name="email"
+							type="email"
+							autocomplete="email"
+							required
+							class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+							placeholder="tu@email.com"
+						/>
+					</div>
+
+					<!-- Password -->
+					<div>
+						<label for="password" class="block text-sm font-medium text-zinc-300 mb-2">
+							Contraseña
+						</label>
+						<input
+							id="password"
+							name="password"
+							type="password"
+							autocomplete="current-password"
+							required
+							class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+							placeholder="••••••••"
+						/>
+					</div>
+
+					<!-- Remember Me & Forgot Password -->
+					<div class="flex items-center justify-between">
+						<div class="flex items-center">
+							<input
+								id="remember-me"
+								name="remember-me"
+								type="checkbox"
+								class="h-4 w-4 bg-zinc-800 border-zinc-700 rounded text-orange-500 focus:ring-orange-500"
+							/>
+							<label for="remember-me" class="ml-2 block text-sm text-zinc-400">
+								Recordarme
+							</label>
+						</div>
+						<div class="text-sm">
+							<a href="#" class="text-orange-500 hover:text-orange-400 transition-colors">
+								¿Olvidaste tu contraseña?
+							</a>
+						</div>
+					</div>
+
+					<!-- Submit Button -->
+					<button
+						type="submit"
+						id="submit-btn"
+						class="w-full gradient-primary text-white font-bold py-3 px-4 rounded-lg hover:shadow-xl hover:shadow-orange-500/30 transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+					>
+						<span id="button-text">Iniciar Sesión</span>
+						<span id="button-loading" class="hidden">
+							<svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+								<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+								<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+							</svg>
+						</span>
+					</button>
+				</form>
+
+				<!-- Divider -->
+				<div class="mt-6">
+					<div class="relative">
+						<div class="absolute inset-0 flex items-center">
+							<div class="w-full border-t border-zinc-700"></div>
+						</div>
+						<div class="relative flex justify-center text-sm">
+							<span class="px-2 bg-zinc-900 text-zinc-400">¿No tienes cuenta?</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Register Link -->
+				<div class="mt-6">
+					<a
+						href="/register"
+						class="w-full flex justify-center py-3 px-4 border border-zinc-700 rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-white transition-all duration-300"
+					>
+						Crear una cuenta
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</Layout>
+
+<script>
+	// @ts-nocheck
+	import { api } from '../lib/api';
+	import { setAuthData, redirectIfAuthenticated } from '../lib/auth';
+
+	// Redirect if already authenticated
+	if (redirectIfAuthenticated()) {
+		// Stop execution if redirecting
+		throw new Error('Redirecting...');
+	}
+
+	const form = document.getElementById('login-form');
+	const errorMessage = document.getElementById('error-message');
+	const errorText = document.getElementById('error-text');
+	const submitBtn = document.getElementById('submit-btn');
+	const buttonText = document.getElementById('button-text');
+	const buttonLoading = document.getElementById('button-loading');
+
+	function showError(message) {
+		errorText.textContent = message;
+		errorMessage.classList.remove('hidden');
+	}
+
+	function hideError() {
+		errorMessage.classList.add('hidden');
+	}
+
+	function setLoading(loading) {
+		submitBtn.disabled = loading;
+		if (loading) {
+			buttonText.classList.add('hidden');
+			buttonLoading.classList.remove('hidden');
+		} else {
+			buttonText.classList.remove('hidden');
+			buttonLoading.classList.add('hidden');
+		}
+	}
+
+	form?.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		hideError();
+		setLoading(true);
+
+		const formData = new FormData(form);
+		const email = formData.get('email');
+		const password = formData.get('password');
+
+		try {
+			const response = await api.login(email, password);
+
+			if (response.success && response.data) {
+				// Save auth data
+				setAuthData(
+					response.data.user,
+					response.data.accessToken,
+					response.data.refreshToken
+				);
+
+				// Redirect to dashboard
+				window.location.href = '/dashboard';
+			} else {
+				showError(response.error || 'Error al iniciar sesión');
+				setLoading(false);
+			}
+		} catch (error) {
+			showError('Error de conexión. Por favor intenta de nuevo.');
+			setLoading(false);
+		}
+	});
+</script>
