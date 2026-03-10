@@ -89,6 +89,20 @@ import Layout from "../layouts/Layout.astro";
 						/>
 					</div>
 
+					<!-- Objetivo -->
+					<div>
+						<label for="objetive" class="block text-sm font-medium text-zinc-300 mb-2">
+							Objetivo <span class="text-zinc-500">(opcional)</span>
+						</label>
+						<input
+							id="objetive"
+							name="objetive"
+							type="text"
+							class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+							placeholder="Perder peso, ganar músculo..."
+						/>
+					</div>
+
 					<!-- Password -->
 					<div>
 						<label for="password" class="block text-sm font-medium text-zinc-300 mb-2">
@@ -248,6 +262,7 @@ import Layout from "../layouts/Layout.astro";
 			email: formData.get('email'),
 			password: password,
 			phone: formData.get('phone') || undefined,
+			objetive: formData.get('objetive') || undefined,
 		};
 
 		try {

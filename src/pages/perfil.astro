@@ -107,6 +107,20 @@ import Layout from "../layouts/Layout.astro";
 						/>
 					</div>
 
+					<!-- Objetivo -->
+					<div>
+						<label for="objetive" class="block text-sm font-medium text-zinc-300 mb-2">
+							Objetivo
+						</label>
+						<input
+							id="objetive"
+							name="objetive"
+							type="text"
+							class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+							placeholder="Perder peso, ganar músculo..."
+						/>
+					</div>
+
 					<!-- Role Badge -->
 					<div>
 						<label class="block text-sm font-medium text-zinc-300 mb-2">
@@ -163,6 +177,7 @@ import Layout from "../layouts/Layout.astro";
 	const lastNameInput = document.getElementById('last_name');
 	const emailInput = document.getElementById('email');
 	const phoneInput = document.getElementById('phone');
+	const objetiveInput = document.getElementById('objetive');
 	const imageUrlInput = document.getElementById('image_url');
 	const roleBadge = document.getElementById('role-text');
 	const submitBtn = document.getElementById('submit-btn');
@@ -193,6 +208,7 @@ import Layout from "../layouts/Layout.astro";
 		lastNameInput.value = user.last_name;
 		emailInput.value = user.email;
 		phoneInput.value = user.phone || '';
+		objetiveInput.value = user.objetive || '';
 		imageUrlInput.value = user.image_url || '';
 
 		// Set role badge
@@ -214,6 +230,7 @@ import Layout from "../layouts/Layout.astro";
 		firstNameInput.value = updatedData.first_name;
 		lastNameInput.value = updatedData.last_name;
 		phoneInput.value = updatedData.phone || '';
+		objetiveInput.value = updatedData.objetive || '';
 		imageUrlInput.value = updatedData.image_url || '';
 
 		// Update profile picture
@@ -261,6 +278,7 @@ import Layout from "../layouts/Layout.astro";
 				first_name: firstNameInput.value.trim(),
 				last_name: lastNameInput.value.trim(),
 				phone: phoneInput.value.trim() || null,
+				objetive: objetiveInput.value.trim() || null,
 				image_url: imageUrlInput.value.trim() || null
 			};
 
@@ -321,3 +339,18 @@ import Layout from "../layouts/Layout.astro";
 	// Initialize
 	loadUserData();
 </script>
+
+<style>
+  #profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  #profile-form > :nth-child(1) { order: 3; } /* Nombre/Apellido */
+  #profile-form > :nth-child(2) { order: 4; } /* Email */
+  #profile-form > :nth-child(3) { order: 2; } /* Teléfono */
+  #profile-form > :nth-child(4) { order: 1; } /* Objetivo */
+  #profile-form > :nth-child(5) { order: 5; } /* Tipo de Cuenta */
+  #profile-form > :nth-child(6) { order: 6; } /* Botón */
+</style>
